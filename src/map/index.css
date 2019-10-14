@@ -1,0 +1,25 @@
+:host {
+  background: black;
+  color: white;
+}
+:host > div {
+  padding: 1em;
+  box-sizing: border-box;
+}
+.top {
+  display: grid;
+  grid-auto-flow: column;
+  grid-gap: 1em;
+  width: 400px;
+  padding: 0 1em 1em;
+  box-sizing: border-box;
+}
+.canvases {
+  position: relative;
+  height: 100vh;
+}
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}

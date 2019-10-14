@@ -1,0 +1,30 @@
+{
+  "antonica": {
+    "innothule": {
+      "path": "/assets/maps/antonica/innothule.jpg",
+      "modX": -1,
+      "modY": -1,
+      "x": [
+        -2000,
+        1000
+      ],
+      "y": [
+        -3000,
+        3000
+      ]
+    },
+    "grobb": {
+      "path": "/assets/maps/antonica/grobb.jpg",
+      "modX": -1,
+      "modY": -1,
+      "x": [
+        -250,
+        1000
+      ],
+      "y": [
+        -800,
+        200
+      ]
+    }
+  }
+}
