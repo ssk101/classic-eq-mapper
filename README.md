@@ -15,7 +15,7 @@ Create a config file at root level called `config.json`:
   "logFile": "<full name of your target character's log file",
   "defaultContinent": "<e.g. antonica>",
   "defaultMap": "<e.g. grobb>",
-  "debug": false /* true shows a green dot where 0, 0 should be */
+  "debug": false
 }
 ```
 
@@ -30,3 +30,5 @@ Most maps aren't populated with base coordinates, but you can check `/src/map/ma
 `modX` and `modY` means that the X or Y axes are "reversed" in the image, coordinate remapping functions depend on these.
 
 The `x` and `y` arrays are normalized for west-to-east and north-to-south respectively, meaning if you have a map where `0, 0` is somewhere in the middle, the X axis starts at `200` at the top left and the Y axis ends at 800 at the top right, these should be reversed (check the Grobb map image for reference).
+
+`"debug": true` will show a green dot where 0, 0 should be.
