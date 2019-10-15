@@ -11,7 +11,7 @@ $ npm i
 Create a config file at root level called `config.json`:
 ```json
 {
-  "logDir": "<path to your EQ log directory>/",
+  "logDir": "<path to your EQ log directory>",
   "logFile": "<full name of your target character's log file",
   "defaultContinent": "<e.g. antonica>",
   "defaultMap": "<e.g. grobb>",
