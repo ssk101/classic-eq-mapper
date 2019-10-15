@@ -1,6 +1,6 @@
 {
   "name": "classic-eq-mapper",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Displays your location on classic EQ maps in your browser via log parsing",
   "author": "ssk101",
   "license": "GPL",
@@ -31,7 +31,6 @@
     "construct-style-sheets-polyfill": "^2.2.10",
     "postcss-preset-env": "^6.7.0",
     "socket.io": "^2.3.0",
-    "stylus": "^0.54.7",
     "virtual-dom": "^2.1.1"
   },
   "devDependencies": {
