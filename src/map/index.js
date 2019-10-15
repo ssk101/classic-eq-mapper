@@ -97,10 +97,10 @@ export class Map extends HTMLElement {
     }
   }
   attachTemplate() {
-    attachTemplate.bind(this)()
+    attachTemplate.call(this)
   }
   render() {
-    render.bind(this)()
+    render.call(this)
   }
 
   get continents() {
