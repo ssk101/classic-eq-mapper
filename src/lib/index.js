@@ -1,5 +1,4 @@
-import createElement from 'virtual-dom/create-element'
-import { diff, patch } from 'virtual-dom'
+import { diff, patch, create as createElement } from 'virtual-dom'
 
 global.CACHE = {}
 
