@@ -12,7 +12,8 @@ Create a config file at root level called `config.json`:
   "logDir": "<path to your EQ log directory>/",
   "logFile": "<full name of your target character's log file",
   "defaultContinent": "<e.g. antonica>",
-  "defaultMap": "<e.g. grobb>"
+  "defaultMap": "<e.g. grobb>",
+  "debug": false // shows a green dot where 0, 0 should be
 }
 ```
 

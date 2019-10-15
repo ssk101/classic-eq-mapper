@@ -57,11 +57,13 @@ export class Map extends HTMLElement {
       ...this.convertCoords(map.x[0], map.y[0])
     )
 
-    this.contexts.data.fillStyle = 'green'
-    this.contexts.data.beginPath()
-    this.contexts.data.arc(0, 0, ...dotOpts)
-    this.contexts.data.closePath()
-    this.contexts.data.fill()
+    if(config.debug) {
+      this.contexts.data.fillStyle = 'green'
+      this.contexts.data.beginPath()
+      this.contexts.data.arc(0, 0, ...dotOpts)
+      this.contexts.data.closePath()
+      this.contexts.data.fill()
+    }
 
     this.contexts.data.fillStyle = 'red'
     this.contexts.data.beginPath()

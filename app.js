@@ -45,10 +45,6 @@ app.use('/assets', express.static(path.join(__dirname, 'public')))
 app.use('/build', express.static(path.join(__dirname, 'build')))
 app.get('/', (req, res) => res.render('index', { title: 'Home' }))
 
-async function sleep(millis) {
-  return new Promise(resolve => setTimeout(resolve, millis));
-}
-
 io.on('connection', (socket) => {
   const logDir = config.logDir
   const logFile = config.logFile
