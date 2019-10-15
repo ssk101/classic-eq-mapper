@@ -7,7 +7,7 @@
   "main": "app.js",
   "scripts": {
     "build": "browserify ./src -o ./build/bundle.js",
-    "watch": "npm run build -- --watch",
+    "watch": "watchify ./src -o ./build/bundle.js",
     "dev-server": "./node_modules/.bin/nodemon app.js",
     "server": "node app.js",
     "start": "npm run watch & npm run server",
@@ -31,14 +31,11 @@
     "construct-style-sheets-polyfill": "^2.2.10",
     "postcss-preset-env": "^6.7.0",
     "socket.io": "^2.3.0",
-    "stylus": "^0.54.7",
     "virtual-dom": "^2.1.1"
   },
   "devDependencies": {
-    "bluebird": "^3.7.0",
     "browserify": "^16.5.0",
     "express": "^4.17.1",
-    "nib": "^1.1.2",
     "nodemon": "^1.19.3",
     "pug": "^2.0.4",
     "tail": "^2.0.3",

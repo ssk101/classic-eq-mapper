@@ -1,8 +1,4 @@
-const Promise = require('bluebird')
 const express = require('express')
-const stylus = require('stylus')
-const nib = require('nib')
-const fs = require('fs')
 const { Tail } = require('tail')
 const path = require('path')
 const app = express()
@@ -27,20 +23,8 @@ if(typeof config !== 'undefined' && (!config.logDir || !config.logFile)) {
   exit()
 }
 
-function compile(str, path) {
-  return stylus(str)
-    .set('filename', path)
-    .use(nib())
-}
-
 app.set('views', __dirname + '/views')
 app.set('view engine', 'pug')
-app.use(stylus.middleware(
-  {
-    src: __dirname + '/public'
-    , compile: compile
-  }
-))
 app.use('/assets', express.static(path.join(__dirname, 'public')))
 app.use('/build', express.static(path.join(__dirname, 'build')))
 app.get('/', (req, res) => res.render('index', { title: 'Home' }))
@@ -51,7 +35,6 @@ io.on('connection', (socket) => {
   const tail = new Tail(path.join(logDir, logFile), { useWatchFile: true})
   tail.on('line', (line) => {
     console.log(line)
-
     if(line.includes('Your Location is')) {
       var raw = line.split('is').pop().trim()
       var loc = raw.split(' ').map(i => Number(i.replace(/,/, '')))
