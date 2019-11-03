@@ -1,6 +1,6 @@
 {
   "name": "classic-eq-mapper",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Displays your location on classic EQ maps in your browser via log parsing",
   "author": "ssk101",
   "license": "GPL",
