@@ -36,6 +36,7 @@ app.use('/build', express.static(path.join(__dirname, 'build')))
 app.get('/', (req, res) => res.render('index'))
 
 io.on('connection', (socket) => {
+  const regexWho = /\[.*?\]\s(There\sare\s)[0-9]+(\splayers\sin\s)/g
   const tail = new Tail(path.join(config.logDir, config.logFile), {
     useWatchFile: true,
     fsWatchOptions: {
@@ -49,6 +50,15 @@ io.on('connection', (socket) => {
       var raw = line.split('is').pop().trim()
       var location = raw.split(' ').map(i => Number(i.replace(/,/, '')))
       socket.emit('location', { location })
+    }
+    if(line.match(regexWho)) {
+      var map = line
+        .replace(regexWho, '')
+        .replace(/\./g, '')
+        .split(' ')
+        .join('_')
+        .toLowerCase()
+      socket.emit('map', { map })
     }
     if(line.includes('] You have entered ')) {
       var map = line

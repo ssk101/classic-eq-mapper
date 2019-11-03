@@ -5,7 +5,7 @@
       "modX": -1,
       "modY": -1,
       "x": [
-        -2000,
+        -2250,
         1000
       ],
       "y": [
@@ -24,6 +24,32 @@
       "y": [
         -800,
         200
+      ]
+    },
+    "southern_desert_of_ro": {
+      "path": "/assets/maps/antonica/southern_desert_of_ro.jpg",
+      "modX": -1,
+      "modY": -1,
+      "x": [
+        -1400,
+        1000
+      ],
+      "y": [
+        -1500,
+        3000
+      ]
+    },
+    "the_feerrott": {
+      "path": "/assets/maps/antonica/the_feerrott.jpg",
+      "modX": -1,
+      "modY": -1,
+      "x": [
+        -3000,
+        3500
+      ],
+      "y": [
+        -3000,
+        2500
       ]
     }
   }
