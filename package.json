@@ -6,39 +6,63 @@
   "license": "GPL",
   "main": "app.js",
   "scripts": {
-    "build": "browserify ./src -o ./build/bundle.js",
-    "watch": "watchify ./src -o ./build/bundle.js",
+    "build": "browserify ./src -v -o ./build/bundle.js",
+    "watch": "watchify ./src -v -o ./build/bundle.js",
     "dev-server": "./node_modules/.bin/nodemon app.js",
     "server": "node app.js",
-    "start": "npm run watch & npm run server",
-    "dev": "npm run watch & npm run dev-server"
+    "start": "npm run build && npm run watch & npm run server",
+    "dev": "npm run watch & npm run dev-server",
+    "lint": "eslint -c ./.eslintrc ."
   },
   "browserify": {
     "transform": [
       "babelify"
     ]
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint -c ./.eslintrc.json"
+    ]
+  },
   "dependencies": {
+    "@babel/runtime": "^7.6.3",
+    "lodash": "^4.17.15",
+    "socket.io": "^2.3.0",
+    "tail": "^2.0.3",
+    "virtual-dom": "^2.1.1"
+  },
+  "devDependencies": {
     "@babel/core": "7.1.2",
     "@babel/plugin-proposal-decorators": "^7.6.0",
     "@babel/plugin-proposal-export-namespace-from": "7.0.0",
     "@babel/plugin-proposal-function-bind": "^7.0.0",
     "@babel/plugin-proposal-optional-chaining": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/plugin-transform-async-to-generator": "7.1.0",
+    "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/preset-env": "7.1.0",
+    "babel-eslint": "^10.0.3",
     "babel-plugin-import-postcss": "^2.0.0",
+    "babel-plugin-stylus-compiler": "^1.4.0",
     "babelify": "^10.0.0",
-    "construct-style-sheets-polyfill": "^2.2.10",
-    "postcss-preset-env": "^6.7.0",
-    "socket.io": "^2.3.0",
-    "virtual-dom": "^2.1.1"
-  },
-  "devDependencies": {
     "browserify": "^16.5.0",
+    "eslint": "^5.15.3",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-only-warn": "^1.0.1",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
     "express": "^4.17.1",
+    "husky": "^3.0.9",
+    "lint-staged": "^9.4.2",
     "nodemon": "^1.19.3",
-    "pug": "^2.0.4",
-    "tail": "^2.0.3",
     "watchify": "^3.11.1"
   }
 }
