@@ -3,6 +3,7 @@ import maps from './maps.json'
 import config from '../../config.json'
 import styles from './map.styl'
 import find from 'lodash/find'
+import { skull } from './shapes.json'
 const socket = global.io()
 
 export class Map extends HTMLElement {
@@ -13,7 +14,7 @@ export class Map extends HTMLElement {
 
   attributeChangedCallback(attr, newVal) {
     this[attr] = newVal
-    this.updateCanvas()
+    this.updateMapImage()
     this.render()
   }
 
@@ -21,8 +22,11 @@ export class Map extends HTMLElement {
     this.selectedContinent = config.defaultContinent || 'antonica'
     this.selectedMap = config.defaultMap || 'grobb'
     this.currentLine = 'Waiting for log activity...'
+    this.currentLocation = [0, 0]
+    this.deathLocations = []
+    this.render()
 
-    this.updateCanvas()
+    this.updateMapImage()
 
     this.shadowRoot.querySelector('#continents')
       .addEventListener('change', ({ target }) => {
@@ -34,7 +38,13 @@ export class Map extends HTMLElement {
       })
 
     socket.on('location', ({ location }) => {
-      this.drawLocation(location)
+      this.currentLocation = location
+      this.render()
+      this.drawLocation()
+    })
+    socket.on('death', () => {
+      this.render()
+      this.drawLocation({ death: true })
     })
     socket.on('map', ({ map }) => {
       const found = find(maps, map)
@@ -49,68 +59,110 @@ export class Map extends HTMLElement {
     })
   }
 
-  convertCoords(x, y) {
+  convertCoords(x, y, layer = 'player') {
     const map = this.maps[this.selectedMap]
     const size = (c) => [map.x, map.y]
       .map(c => Math.abs(c[0]) + Math.abs(c[1]))
     const [mapWidth, mapHeight] = size()
-    var widthDiff = this.canvases.data.width / mapWidth * 100
-    var heightDiff = this.canvases.data.height / mapHeight * 100
+    var widthDiff = this.canvases[layer].width / mapWidth * 100
+    var heightDiff = this.canvases[layer].height / mapHeight * 100
     x = (x * (widthDiff / 100)) * map.modX
     y = (y * (heightDiff / 100)) * map.modY
     return [x, y]
   }
 
-  drawLocation([y, x]) {
+  drawLocation(highlights = {}) {
+    const [y, x] = this.currentLocation
     const map = this.maps[this.selectedMap]
     const dotOpts = [4, 0, 2 * Math.PI, true]
-    this.contexts.data.clearRect(
-      0, 0, this.canvases.data.width, this.canvases.data.height
-    )
-    this.contexts.data.save()
-    this.contexts.data.translate(
-      ...this.convertCoords(map.x[0], map.y[0])
-    )
+
+    if(highlights.death) {
+      this.deathLocations.push(this.currentLocation)
+      this.contexts.highlights.translate(
+        ...this.convertCoords(map.x[0], map.y[0])
+      )
+      this.contexts.highlights.clearRect(
+        0, 0, this.canvases.highlights.width, this.canvases.highlights.height
+      )
+
+      this.deathLocations.forEach(([dy, dx]) => {
+        var icon = new Image()
+        icon.onload = () => {
+          const width = 20
+          const height = 20
+          const coords = this.convertCoords(dx, dy)
+          this.contexts.highlights.drawImage(
+            icon,
+            coords[0] - (width / 2),
+            coords[1] - (height / 2),
+            width,
+            height
+          )
+        }
+        icon.src = skull
+      })
+    }
 
     if(config.debug) {
-      this.contexts.data.fillStyle = 'green'
-      this.contexts.data.beginPath()
-      this.contexts.data.arc(0, 0, ...dotOpts)
-      this.contexts.data.closePath()
-      this.contexts.data.fill()
+      this.contexts.debug.translate(...this.convertCoords(map.x[0], map.y[0]))
+      this.contexts.debug.clearRect(
+        0, 0, this.canvases.debug.width, this.canvases.debug.height
+      )
+      this.contexts.debug.fillStyle = 'green'
+      this.contexts.debug.beginPath()
+      this.contexts.debug.arc(0, 0, ...dotOpts)
+      this.contexts.debug.closePath()
+      this.contexts.debug.fill()
     }
 
-    this.contexts.data.fillStyle = 'red'
-    this.contexts.data.beginPath()
-    this.contexts.data.arc(...this.convertCoords(x, y), ...dotOpts)
-    this.contexts.data.closePath()
-    this.contexts.data.fill()
-    this.contexts.data.restore()
+    this.contexts.player.translate(...this.convertCoords(map.x[0], map.y[0]))
+    this.contexts.player.clearRect(
+      0, 0, this.canvases.player.width, this.canvases.player.height
+    )
+    this.contexts.player.fillStyle = 'red'
+    this.contexts.player.beginPath()
+    this.contexts.player.arc(...this.convertCoords(x, y), ...dotOpts)
+    this.contexts.player.closePath()
+    this.contexts.player.fill()
   }
 
-  updateCanvas() {
-    if(!this.selectedMap) return
+  updateMapImage() {
+    if(!this.selectedMap || !Object.keys(this.canvases).length) return
     const map = this.maps[this.selectedMap]
-
-    this.canvases = {
-      img: this.shadowRoot.querySelector('canvas#img'),
-      data: this.shadowRoot.querySelector('canvas#data'),
-    }
-
-    this.contexts = {
-      img: this.canvases.img.getContext('2d'),
-      data: this.canvases.data.getContext('2d'),
-    }
-
     var background = new Image()
     background.src = map.path
     background.onload = ({ target }) => {
       ;['width', 'height'].forEach(d => {
-        this.canvases.img[d] = target[d]
-        this.canvases.data[d] = target[d]
+        this.layers.forEach(layer => {
+          this.canvases[layer][d] = target[d]
+        })
       })
       this.contexts.img.drawImage(background, 0, 0)
     }
+  }
+
+  get canvases() {
+    return this.layers.reduce((acc, layer) => {
+      acc[layer] = this.shadowRoot.querySelector(`canvas#${layer}`)
+      return acc
+    }, {})
+  }
+
+  get contexts() {
+    if(!Object.keys(this.canvases).length) return
+    return this.layers.reduce((acc, layer) => {
+      acc[layer] = this.canvases[layer].getContext('2d')
+      return acc
+    }, {})
+  }
+
+  get layers() {
+    return [
+      'img',
+      'debug',
+      'highlights',
+      'player',
+    ]
   }
 
   get continents() {
@@ -159,14 +211,14 @@ export class Map extends HTMLElement {
         ]),
       ]),
       h('.log', this.currentLine),
-      h('.canvases', [
-        h('canvas#img'),
-        h('canvas#data'),
-      ]),
+      h('.canvases', this.layers.map(layer => h(`canvas#${layer}`))),
     ])
   }
 
   static get observedAttributes() {
-    return ['selected-continent', 'selected-map', 'current-line']
+    return [
+      'selected-continent',
+      'selected-map',
+    ]
   }
 }

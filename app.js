@@ -47,8 +47,14 @@ io.on('connection', (socket) => {
     console.log(line)
     if(line.includes('] Your Location is ')) {
       var raw = line.split('is').pop().trim()
-      var location = raw.split(' ').map(i => Number(i.replace(/,/, '')))
+      var location = raw
+        .split(' ')
+        .map(i => Number(i.replace(/,/, '')))
       socket.emit('location', { location })
+    }
+    // if(line.includes('] You have been slain by ')) {
+    if(line.includes('] ')) {
+      socket.emit('death')
     }
     if(line.includes('] You have entered ')) {
       var map = line
